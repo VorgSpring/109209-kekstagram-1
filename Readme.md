@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Павлов](https://up.htmlacademy.ru/nodejs/1/user/109209).
-* Наставник: `Неизвестно`.
+* Наставник: [Николай Яшин](https://htmlacademy.ru/profile/id213763).
 
 ---
 
