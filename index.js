@@ -1,17 +1,18 @@
 const userCommand = process.argv[2];
 
+/* eslint no-undefined: "off"*/
 const COMMAND = {
-  HELP: '--help',
-  VERSION: '--version',
+  HELP: `--help`,
+  VERSION: `--version`,
   WITHOUT: undefined
 };
 
 const ERROR_EXIT_CODE = 1;
 
-switch(userCommand) {
+switch (userCommand) {
   case COMMAND.HELP:
-    console.log (
-      `Доступные команды:
+    console.log(
+        `Доступные команды:
       --help    — печатает этот текст;
       --version — печатает версию приложения;`
     );
@@ -23,7 +24,7 @@ switch(userCommand) {
 
   case COMMAND.WITHOUT:
     console.log(
-      `Привет пользователь!
+        `Привет пользователь!
       Эта программа будет запускать сервер «Кекстаграм».
       Автор: Кекс.`
     );
@@ -31,8 +32,8 @@ switch(userCommand) {
 
   default:
     console.error(
-      `Неизвестная команда ${userCommand}.
+        `Неизвестная команда ${userCommand}.
       Чтобы прочитать правила использования приложения, наберите "--help"`
     );
     process.exitCode = ERROR_EXIT_CODE;
-};
+}
