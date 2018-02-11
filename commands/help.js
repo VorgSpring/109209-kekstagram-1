@@ -1,4 +1,5 @@
-const colors = require('colors');
+/* eslint-disable no-unused-vars*/
+const colors = require(`colors`);
 
 const author = require(`./author`);
 const description = require(`./description`);

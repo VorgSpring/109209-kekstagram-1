@@ -1,8 +1,9 @@
-const colors = require('colors');
+/* eslint-disable no-unused-vars*/
+const colors = require(`colors`);
 
 const packageInfo = require(`../package.json`);
 
-const [major, minor, patch] = packageInfo.version.split('.')
+const [major, minor, patch] = packageInfo.version.split(`.`);
 
 module.exports = {
   name: `--version`,
