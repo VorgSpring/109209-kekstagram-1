@@ -1,5 +1,5 @@
 const commands = require(`./commands/index`);
-const userCommand = process.argv[2];
+const userCommand = process.argv[2] || Symbol.for(undefined);
 
 const ERROR_EXIT_CODE = 1;
 

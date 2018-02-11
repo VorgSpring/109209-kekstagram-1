@@ -1,7 +1,8 @@
-/* eslint no-undefined: "off"*/
+const name = Symbol.for(undefined);
+
 module.exports = {
-  name: undefined,
-  description: `Shows program info`,
+  description: `печатает информацию о приложении`,
+  name,
   execute() {
     console.log(
         `Привет пользователь!

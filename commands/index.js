@@ -3,7 +3,7 @@ const description = require(`./description`);
 const help = require(`./help`);
 const license = require(`./license`);
 const version = require(`./version`);
-const without = require(`./without`);
+const defaultCommand = require(`./default`);
 
 const commands = [
   author,
@@ -11,7 +11,7 @@ const commands = [
   help,
   license,
   version,
-  without
+  defaultCommand
 ];
 
 module.exports = new Map(commands.map((command) => (
