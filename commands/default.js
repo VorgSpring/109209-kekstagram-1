@@ -1,3 +1,5 @@
+const colors = require('colors');
+
 const name = Symbol.for(`default`);
 
 module.exports = {
@@ -7,7 +9,7 @@ module.exports = {
     console.log(
         `Привет пользователь!
       Эта программа будет запускать сервер «Кекстаграм».
-      Автор: Кекс.`
+      Автор: Кекс.`.magenta
     );
   }
 };
