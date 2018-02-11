@@ -1,4 +1,5 @@
 const commands = require(`./commands/index`);
+/* eslint no-undefined: "off"*/
 const userCommand = process.argv[2] || Symbol.for(undefined);
 
 const ERROR_EXIT_CODE = 1;

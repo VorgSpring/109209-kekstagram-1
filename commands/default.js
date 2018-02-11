@@ -1,3 +1,4 @@
+/* eslint no-undefined: "off"*/
 const name = Symbol.for(undefined);
 
 module.exports = {

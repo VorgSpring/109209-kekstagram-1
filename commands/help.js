@@ -10,8 +10,7 @@ const commands = [
   version
 ];
 
-const help = commands.map(command => `${command.name} — ${command.description}`).join('\n\t')
-
+const help = commands.map((command) => `${command.name} — ${command.description}`).join(`\n\t`);
 
 module.exports = {
   name: `--help`,
