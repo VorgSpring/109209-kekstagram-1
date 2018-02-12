@@ -5,15 +5,27 @@ const license = require(`./license`);
 const version = require(`./version`);
 const defaultCommand = require(`./default`);
 
-const commands = [
-  author,
-  description,
-  help,
-  license,
-  version,
-  defaultCommand
-];
+const ERROR_EXIT_CODE = 1;
 
-module.exports = new Map(commands.map((command) => (
-  [command.name, command.execute]
-)));
+const commands = new Map(
+    [
+      author,
+      description,
+      help,
+      license,
+      version,
+      defaultCommand
+    ].map((command) => (
+      [command.name, command.execute]
+    ))
+);
+
+
+module.exports = (command = Symbol.for(`default`)) => {
+  if (commands.has(command)) {
+    commands.get(command)();
+  } else {
+    help.execute();
+    process.exitCode = ERROR_EXIT_CODE;
+  }
+};

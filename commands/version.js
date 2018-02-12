@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars*/
 const colors = require(`colors`);
 
 const packageInfo = require(`../package.json`);
