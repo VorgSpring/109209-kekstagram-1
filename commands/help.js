@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars*/
 const colors = require(`colors`);
 
 const author = require(`./author`);
@@ -13,7 +12,7 @@ const commands = [
   version
 ];
 
-const help = commands.map((command) => `${command.name.gray} — ${command.description.green}`).join(`\n\t`);
+const help = commands.map((command) => `${colors.gray(command.name)} — ${colors.green(command.description)}`).join(`\n\t`);
 
 module.exports = {
   name: `--help`,

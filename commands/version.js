@@ -9,6 +9,6 @@ module.exports = {
   name: `--version`,
   description: `печатает версию приложения`,
   execute() {
-    console.log(`v${major.red}.${minor.green}.${patch.blue}`);
+    console.log(`v${colors.red(major)}.${colors.green(minor)}.${colors.blue(patch)}`);
   }
 };
