@@ -1,14 +1,5 @@
-const commands = require(`./commands/index`);
-const userCommand = process.argv[2] || Symbol.for(`default`);
+const commandsManager = require(`./commands/index`);
+const userCommand = process.argv[2];
 
-const ERROR_EXIT_CODE = 1;
+commandsManager(userCommand);
 
-if (commands.has(userCommand)) {
-  commands.get(userCommand)();
-} else {
-  console.error(
-      `Неизвестная команда ${userCommand}.
-    Чтобы прочитать правила использования приложения, наберите "--help"`
-  );
-  process.exitCode = ERROR_EXIT_CODE;
-}
