@@ -1,6 +1,6 @@
-const util = require(`./util`);
+const {getRandomNumber, getRandomArray} = require(`./util`);
 
-const effects = [`none`, `chrome`, `sepia`, `blah`, `blah-blah`];
+const effects = [`none`, `chrome`, `sepia`, `marvin`, `phobos`, `heat`];
 const hastags = [`#html`, `#css`, `#js`, `#node`, `#mocha`, `#blah`];
 const comments = [
   `Lorem Ipsum.`,
@@ -21,13 +21,13 @@ const MAX_VALUE_FOR = {
 
 function generateEntity() {
   const data = {
-    'url': `https://picsum.photos/600/?${util.getRandomNumber(MAX_VALUE_FOR.IMAGES_REQUIRES)}}`,
-    'scale': util.getRandomNumber(MAX_VALUE_FOR.SCALE),
-    'effect': effects[util.getRandomNumber(effects.length)],
-    'hashtags': util.getRandomArray(hastags, MAX_VALUE_FOR.HASHTAGS),
+    'url': `https://picsum.photos/600/?${getRandomNumber(MAX_VALUE_FOR.IMAGES_REQUIRES)}`,
+    'scale': getRandomNumber(MAX_VALUE_FOR.SCALE),
+    'effect': effects[getRandomNumber(effects.length)],
+    'hashtags': getRandomArray(hastags, MAX_VALUE_FOR.HASHTAGS),
     'description': `Lorem Ipsum is simply dummy text.`,
-    'likes': util.getRandomNumber(MAX_VALUE_FOR.LIKES),
-    'comments': util.getRandomArray(comments, MAX_VALUE_FOR.COMMENTS)
+    'likes': getRandomNumber(MAX_VALUE_FOR.LIKES),
+    'comments': getRandomArray(comments, MAX_VALUE_FOR.COMMENTS)
   };
 
   return JSON.stringify(data);

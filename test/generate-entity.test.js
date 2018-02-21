@@ -3,6 +3,7 @@ const generate = require(`../data/generate`);
 
 describe(`#correctly generates data`, () => {
   const data = JSON.parse(generate.generateEntity());
+  console.log(data);
 
   describe(`#url`, () => {
     it(`should be address is url`, () => {
