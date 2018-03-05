@@ -52,7 +52,8 @@ const readDir = async (filePath, pathname, res) => {
 
 const server = http.createServer((req, res) => {
   const pathname = url.parse(req.url).pathname;
-  const absolutePath = `${process.cwd()}/static${pathname}`;
+  const absolutePath = `${process.cwd()}/static${pathname === `/` ? `/index.html` : pathname}`;
+  console.log(absolutePath);
 
   (async () => {
     try {
