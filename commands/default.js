@@ -10,7 +10,7 @@ let state;
 let rl;
 const fileName = `data.json`;
 
-const QUESTION = {
+const QUESTIONS = {
   DEFAULT: {
     TYPE: `question-default`,
     STRING: `Cгенерировать данные?(y/n) `
@@ -51,12 +51,11 @@ const checkNumber = (number) => {
 
 const reducer = async (question, answer) => {
   switch (question) {
-    case QUESTION.DEFAULT.TYPE:
+    case QUESTIONS.DEFAULT.TYPE:
       switch (answer) {
         case ANSWER.YES:
-          state.question = QUESTION.COUNT;
+          state = {...state, question: QUESTIONS.COUNT};
           break;
-
         case ANSWER.NO:
           state = null;
           break;
@@ -66,20 +65,19 @@ const reducer = async (question, answer) => {
       }
       break;
 
-    case QUESTION.COUNT.TYPE:
+    case QUESTIONS.COUNT.TYPE:
       if (checkNumber(answer)) {
-        state.question = QUESTION.PATH;
-        state.dataCount = answer;
+        state = {...state, question: QUESTIONS.PATH, dataCount: answer};
       } else {
         console.log(ERROR.COUNT);
       }
       break;
 
-    case QUESTION.PATH.TYPE:
-      state.path = path.join(answer, fileName);
+    case QUESTIONS.PATH.TYPE:
+      state = {...state, path: path.join(answer, fileName)};
       try {
         await access(state.path, fs.constants.W_OK);
-        state.question = QUESTION.REWRITE;
+        state = {...state, question: QUESTIONS.REWRITE};
       } catch (e) {
         console.log(INFO.WAITING);
         await createDataFile(state.dataCount, state.path);
@@ -88,7 +86,7 @@ const reducer = async (question, answer) => {
       }
       break;
 
-    case QUESTION.REWRITE.TYPE:
+    case QUESTIONS.REWRITE.TYPE:
       switch (answer) {
         case ANSWER.YES:
           console.log(INFO.WAITING);
@@ -106,16 +104,16 @@ const reducer = async (question, answer) => {
       }
       break;
   }
-  askToQuestion();
+  nextStep();
 };
 
 const initialState = {
-  question: QUESTION.DEFAULT,
+  question: QUESTIONS.DEFAULT,
   path: ``,
   dataCount: 0,
 };
 
-const askToQuestion = () => {
+const nextStep = () => {
   if (state !== null) {
     rl.question(state.question.STRING, (answer) => {
       reducer(state.question.TYPE, answer);
@@ -138,6 +136,6 @@ module.exports = {
     });
 
     console.log(`Привет!`);
-    askToQuestion();
+    nextStep();
   }
 };
