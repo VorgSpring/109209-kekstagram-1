@@ -1,7 +1,7 @@
 const http = require(`http`);
 const url = require(`url`);
 const fs = require(`fs`);
-const path = require('path');
+const path = require(`path`);
 const {promisify} = require(`util`);
 
 const stat = promisify(fs.stat);
@@ -51,7 +51,7 @@ const readDir = async (filePath, pathname, res) => {
 };
 
 const server = http.createServer((req, res) => {
-  const pathname = url.parse(req.url).pathname
+  const pathname = url.parse(req.url).pathname;
   const absolutePath = `${process.cwd()}/static${pathname}`;
 
   (async () => {
