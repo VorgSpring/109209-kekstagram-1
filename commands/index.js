@@ -4,6 +4,7 @@ const help = require(`./help`);
 const license = require(`./license`);
 const version = require(`./version`);
 const defaultCommand = require(`./default`);
+const server = require(`./server`);
 
 const ERROR_EXIT_CODE = 1;
 
@@ -14,6 +15,7 @@ const commands = new Map(
       help,
       license,
       version,
+      server,
       defaultCommand
     ].map((command) => (
       [command.name, command.execute]
