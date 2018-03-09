@@ -1,7 +1,7 @@
 const validationError = (res, message) => {
   res.status(400).send({
     "error": `${message.type}`,
-    [message.field]: `${message.name}`,
+    [message.name]: `${message.field}`,
     "errorMessage": `${message.error}`
   });
 };
