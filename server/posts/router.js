@@ -3,9 +3,15 @@ const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const {getData} = require(`../../data/get`);
 const {checkNumber} = require(`../../util/index`);
+const {dataRenderer} = require(`../util/data-renderer`);
+const {NotFoundError, ValidationError} = require(`../error/index`);
 
 const postsRouter = new Router();
 postsRouter.use(bodyParser.json());
+postsRouter.use((exception, req, res, next) => {
+  dataRenderer.renderException(req, res, exception);
+  next();
+});
 
 const upload = multer({storage: multer.memoryStorage()});
 
@@ -15,9 +21,6 @@ const checkQueryParam = (skip, limit) => {
     isValid = false;
   }
   if (limit && !checkNumber(limit)) {
-    isValid = false;
-  }
-  if (skip && limit && skip >= limit) {
     isValid = false;
   }
   return isValid;
@@ -32,8 +35,7 @@ postsRouter.get(``, (req, res) => {
   const {skip, limit} = req.query;
 
   if (!checkQueryParam(skip, limit)) {
-    res.set(`Content-Type`, `text/html`);
-    res.status(400).end();
+    throw new ValidationError();
   }
 
   const posts = getPosts(skip, limit);
@@ -49,32 +51,21 @@ postsRouter.get(`/:date`, (req, res) => {
   const date = parseInt(req.params.date, 10);
 
   if (isNaN(date)) {
-    res.set(`Content-Type`, `text/html`);
-    res.status(400).end();
+    throw new ValidationError();
   }
 
-  const {skip, limit} = req.query;
-
-  if (!checkQueryParam(skip, limit)) {
-    res.set(`Content-Type`, `text/html`);
-    res.status(400).end();
-  }
-
-  let posts = getPosts(skip, limit);
+  let posts = getPosts();
 
   posts = posts.filter((item)=> {
     return item.date === date;
   });
 
   if (posts.length === 0) {
-    res.set(`Content-Type`, `text/html`);
-    res.status(404).end();
+    throw new NotFoundError();
   }
 
   res.send({
     posts,
-    skip,
-    limit,
     total: posts.length
   });
 });
