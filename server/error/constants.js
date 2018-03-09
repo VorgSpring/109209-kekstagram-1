@@ -9,7 +9,7 @@ const ERRORS = {
   },
   MESSAGE: {
     QUERY: `skip and limit must be number value`,
-    PARAMS: `date must must be number value `,
+    PARAMS: `date must be number value `,
     NOT_FOUND: `this post is not found`
   }
 };
