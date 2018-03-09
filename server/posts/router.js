@@ -3,15 +3,29 @@ const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const {getData} = require(`../../data/get`);
 const {checkNumber} = require(`../../util/index`);
-const {dataRenderer} = require(`../util/data-renderer`);
-const {NotFoundError, ValidationError} = require(`../error/index`);
+const {notFoundError, validationError} = require(`../error/index`);
+const {ERRORS} = require(`../error/constants`);
+
+const ERROR_MESSAGE = {
+  QUERY: {
+    type: ERRORS.TYPE.BAD_REQUEST,
+    field: ERRORS.FIELDS.QUERY,
+    name: `request`,
+    error: ERRORS.MESSAGE.QUERY
+  },
+  PARAM: {
+    type: ERRORS.TYPE.BAD_REQUEST,
+    field: ERRORS.FIELDS.PARAMS,
+    name: `request`,
+    error: ERRORS.MESSAGE.PARAMS
+  },
+  NOT_FOUND: {
+    error: ERRORS.MESSAGE.NOT_FOUND
+  }
+};
 
 const postsRouter = new Router();
 postsRouter.use(bodyParser.json());
-postsRouter.use((exception, req, res, next) => {
-  dataRenderer.renderException(req, res, exception);
-  next();
-});
 
 const upload = multer({storage: multer.memoryStorage()});
 
@@ -35,11 +49,11 @@ postsRouter.get(``, (req, res) => {
   const {skip, limit} = req.query;
 
   if (!checkQueryParam(skip, limit)) {
-    throw new ValidationError();
+    return validationError(res, ERROR_MESSAGE.QUERY);
   }
 
   const posts = getPosts(skip, limit);
-  res.send({
+  return res.send({
     posts,
     skip,
     limit,
@@ -51,7 +65,7 @@ postsRouter.get(`/:date`, (req, res) => {
   const date = parseInt(req.params.date, 10);
 
   if (isNaN(date)) {
-    throw new ValidationError();
+    return validationError(res, ERROR_MESSAGE.PARAM);
   }
 
   let posts = getPosts();
@@ -61,10 +75,10 @@ postsRouter.get(`/:date`, (req, res) => {
   });
 
   if (posts.length === 0) {
-    throw new NotFoundError();
+    return notFoundError(res, ERROR_MESSAGE.NOT_FOUND);
   }
 
-  res.send({
+  return res.send({
     posts,
     total: posts.length
   });

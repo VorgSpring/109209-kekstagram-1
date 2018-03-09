@@ -1,5 +1,6 @@
 const request = require(`supertest`);
 const assert = require(`assert`);
+const {ERRORS} = require(`../server/error/constants`);
 
 const {app} = require(`../server/index`);
 
@@ -45,16 +46,34 @@ describe(`#GET`, function () {
           .expect(`Content-Type`, /html/);
     });
 
+    it(`should respond with 404 on empty response`, function () {
+      return request(app).get(`/api/posts/23`).set(`Accept`, `application/json`)
+          .expect(404)
+          .expect(`Content-Type`, /json/)
+          .then((response) => {
+            const errorMessage = response.body.errorMessage;
+            assert(errorMessage, ERRORS.MESSAGE.NOT_FOUND);
+          });
+    });
+
     it(`should respond with 400 on bad request parameters`, function () {
       return request(app).get(`/api/posts/blah`).set(`Accept`, `application/json`)
           .expect(400)
-          .expect(`Content-Type`, /html/);
+          .expect(`Content-Type`, /json/)
+          .then((response) => {
+            const errorMessage = response.body.errorMessage;
+            assert(errorMessage, ERRORS.MESSAGE.PARAMS);
+          });
     });
 
     it(`should respond with 400 on bad query parameters`, function () {
       return request(app).get(`/api/posts/?skip=blah`).set(`Accept`, `application/json`)
           .expect(400)
-          .expect(`Content-Type`, /html/);
+          .expect(`Content-Type`, /json/)
+          .then((response) => {
+            const errorMessage = response.body.errorMessage;
+            assert(errorMessage, ERRORS.MESSAGE.QUERY);
+          });
     });
   });
 });
