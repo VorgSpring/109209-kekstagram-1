@@ -47,12 +47,14 @@ describe(`#GET`, function () {
 
     it(`should respond with 400 on bad request parameters`, function () {
       return request(app).get(`/api/posts/blah`).set(`Accept`, `application/json`)
-          .expect(400);
+          .expect(400)
+          .expect(`Content-Type`, /html/);
     });
 
     it(`should respond with 400 on bad query parameters`, function () {
       return request(app).get(`/api/posts/?skip=blah`).set(`Accept`, `application/json`)
-          .expect(400);
+          .expect(400)
+          .expect(`Content-Type`, /html/);
     });
   });
 });

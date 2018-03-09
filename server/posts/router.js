@@ -32,6 +32,7 @@ postsRouter.get(``, (req, res) => {
   const {skip, limit} = req.query;
 
   if (!checkQueryParam(skip, limit)) {
+    res.set(`Content-Type`, `text/html`);
     res.status(400).end();
   }
 
@@ -48,12 +49,14 @@ postsRouter.get(`/:date`, (req, res) => {
   const date = parseInt(req.params.date, 10);
 
   if (isNaN(date)) {
+    res.set(`Content-Type`, `text/html`);
     res.status(400).end();
   }
 
   const {skip, limit} = req.query;
 
   if (!checkQueryParam(skip, limit)) {
+    res.set(`Content-Type`, `text/html`);
     res.status(400).end();
   }
 
@@ -64,6 +67,7 @@ postsRouter.get(`/:date`, (req, res) => {
   });
 
   if (posts.length === 0) {
+    res.set(`Content-Type`, `text/html`);
     res.status(404).end();
   }
 
