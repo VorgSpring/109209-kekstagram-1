@@ -1,7 +1,6 @@
 const {Router} = require(`express`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
-const {NotFoundError} = require(`../errors/index`);
 const {getData} = require(`../../data/get`);
 
 const postsRouter = new Router();
@@ -25,20 +24,23 @@ postsRouter.get(``, (req, res) => {
   });
 });
 
-postsRouter.get(`/:filter/:value`, (req, res) => {
-  const {filter, value} = req.params;
+postsRouter.get(`/:date`, (req, res) => {
+  const date = parseInt(req.params.date, 10);
+
+  if (isNaN(date)) {
+    res.status(400).end();
+  }
+
   const {skip, limit} = req.query;
 
   let posts = getPosts(skip, limit);
 
-  if (posts.length === 0) {
-    throw new NotFoundError(`posts with "${filter}" "${value}" not found`);
-  }
+  posts = posts.filter((item)=> {
+    return item.date === date;
+  });
 
-  if (value) {
-    posts = posts.filter((item)=> {
-      return item[filter] === value;
-    });
+  if (posts.length === 0) {
+    res.status(404).end();
   }
 
   res.send({

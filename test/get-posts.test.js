@@ -16,13 +16,13 @@ describe(`#GET`, function () {
     });
 
     it(`should respond with request parameters`, function () {
-      return request(app).get(`/api/posts/effect/chrome`).set(`Accept`, `application/json`)
+      return request(app).get(`/api/posts/1519136255107`).set(`Accept`, `application/json`)
           .expect(200)
           .expect(`Content-Type`, /json/)
           .then((response) => {
             const data = response.body;
             data.posts.forEach((post) => {
-              assert(post.effect, `chrome`);
+              assert(post.date, 1519136255107);
             });
           });
     });
@@ -41,14 +41,12 @@ describe(`#GET`, function () {
   describe(`#bad request`, () => {
     it(`should respond with 404 on bad request`, function () {
       return request(app).get(`/api/pos`).set(`Accept`, `application/json`)
-          .expect(404)
-          .expect(`Content-Type`, /html/);
+          .expect(404);
     });
 
-    it(`should respond with 404 on bad request parameters`, function () {
+    it(`should respond with 400 on bad request parameters`, function () {
       return request(app).get(`/api/posts/blah`).set(`Accept`, `application/json`)
-          .expect(404)
-          .expect(`Content-Type`, /html/);
+          .expect(400);
     });
   });
 });
