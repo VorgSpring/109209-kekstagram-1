@@ -2,11 +2,26 @@ const {Router} = require(`express`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const {getData} = require(`../../data/get`);
+const {checkNumber} = require(`../../util/index`);
 
 const postsRouter = new Router();
 postsRouter.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
+
+const checkQueryParam = (skip, limit) => {
+  let isValid = true;
+  if (skip && !checkNumber(skip)) {
+    isValid = false;
+  }
+  if (limit && !checkNumber(limit)) {
+    isValid = false;
+  }
+  if (skip && limit && skip >= limit) {
+    isValid = false;
+  }
+  return isValid;
+};
 
 const getPosts = (skip = 0, limit = 20) => {
   const data = getData(limit);
@@ -15,6 +30,11 @@ const getPosts = (skip = 0, limit = 20) => {
 
 postsRouter.get(``, (req, res) => {
   const {skip, limit} = req.query;
+
+  if (!checkQueryParam(skip, limit)) {
+    res.status(400).end();
+  }
+
   const posts = getPosts(skip, limit);
   res.send({
     posts,
@@ -32,6 +52,10 @@ postsRouter.get(`/:date`, (req, res) => {
   }
 
   const {skip, limit} = req.query;
+
+  if (!checkQueryParam(skip, limit)) {
+    res.status(400).end();
+  }
 
   let posts = getPosts(skip, limit);
 
@@ -51,9 +75,8 @@ postsRouter.get(`/:date`, (req, res) => {
   });
 });
 
-const appUpload = upload.fields([{name: `avatar`, maxCount: 1}, {name: `photos`, maxCount: 3}]);
 
-postsRouter.post(``, appUpload, (req, res) => {
+postsRouter.post(``, upload.single(`url`), (req, res) => {
   res.send(req.body);
 });
 

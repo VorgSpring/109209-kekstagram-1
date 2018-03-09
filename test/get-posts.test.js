@@ -41,11 +41,17 @@ describe(`#GET`, function () {
   describe(`#bad request`, () => {
     it(`should respond with 404 on bad request`, function () {
       return request(app).get(`/api/pos`).set(`Accept`, `application/json`)
-          .expect(404);
+          .expect(404)
+          .expect(`Content-Type`, /html/);
     });
 
     it(`should respond with 400 on bad request parameters`, function () {
       return request(app).get(`/api/posts/blah`).set(`Accept`, `application/json`)
+          .expect(400);
+    });
+
+    it(`should respond with 400 on bad query parameters`, function () {
+      return request(app).get(`/api/posts/?skip=blah`).set(`Accept`, `application/json`)
           .expect(400);
     });
   });
