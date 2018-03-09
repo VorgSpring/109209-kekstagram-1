@@ -2,7 +2,7 @@ const assert = require(`assert`);
 const generate = require(`../data/generate`);
 
 describe(`#correctly generates data`, () => {
-  const data = JSON.parse(generate.generateEntity());
+  const data = generate.generateEntity();
 
   describe(`#url`, () => {
     it(`should be address is url`, () => {

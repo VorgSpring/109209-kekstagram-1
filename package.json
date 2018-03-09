@@ -4,7 +4,7 @@
   "description": "Личный проект «Кекстаграм»",
   "main": "index.js",
   "scripts": {
-    "test:lint": "eslint .",
+    "test:lint": "eslint . --fix",
     "test:mocha": "mocha",
     "test": "npm run test:lint && npm run test:mocha"
   },

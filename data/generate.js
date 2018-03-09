@@ -20,7 +20,7 @@ const MAX_VALUE_FOR = {
 };
 
 function generateEntity() {
-  const data = {
+  return {
     'url': `https://picsum.photos/600/?${getRandomNumber(MAX_VALUE_FOR.IMAGES_REQUIRES)}`,
     'scale': getRandomNumber(MAX_VALUE_FOR.SCALE),
     'effect': effects[getRandomNumber(effects.length)],
@@ -29,8 +29,6 @@ function generateEntity() {
     'likes': getRandomNumber(MAX_VALUE_FOR.LIKES),
     'comments': getRandomArray(comments, MAX_VALUE_FOR.COMMENTS)
   };
-
-  return JSON.stringify(data);
 }
 
 module.exports = {
