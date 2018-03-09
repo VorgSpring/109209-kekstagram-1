@@ -2,6 +2,7 @@ class ValidationError extends Error {
   constructor(errors) {
     super();
     this.code = 400;
+    this.message = `Bad Request`;
     this.errors = errors;
   }
 }

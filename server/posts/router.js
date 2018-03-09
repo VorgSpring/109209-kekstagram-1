@@ -26,7 +26,7 @@ const checkQueryParam = (skip, limit) => {
   return isValid;
 };
 
-const getPosts = (skip = 0, limit = 20) => {
+const getPosts = (skip = 0, limit = 50) => {
   const data = getData(limit);
   return data.slice(skip, skip + limit);
 };
