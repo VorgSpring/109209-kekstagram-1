@@ -4,7 +4,8 @@ const fs = require(`fs`);
 const access = promisify(fs.access);
 const path = require(`path`);
 const name = Symbol.for(`default`);
-const createDataFile = require(`../data/create`).createDataFile;
+const {createDataFile} = require(`../data/create`);
+const {checkNumber} = require(`../util/index`);
 
 let state;
 let rl;
@@ -43,10 +44,6 @@ const ERROR = {
 const INFO = {
   WAITING: `Подождите...`,
   DATA_CREATE: `Данные сгенерированы!`
-};
-
-const checkNumber = (number) => {
-  return !isNaN(parseInt(number, 10));
 };
 
 const reducer = async (question, answer) => {

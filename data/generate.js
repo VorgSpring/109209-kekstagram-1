@@ -20,17 +20,16 @@ const MAX_VALUE_FOR = {
 };
 
 function generateEntity() {
-  const data = {
+  return {
     'url': `https://picsum.photos/600/?${getRandomNumber(MAX_VALUE_FOR.IMAGES_REQUIRES)}`,
     'scale': getRandomNumber(MAX_VALUE_FOR.SCALE),
     'effect': effects[getRandomNumber(effects.length)],
     'hashtags': getRandomArray(hastags, MAX_VALUE_FOR.HASHTAGS),
     'description': `Lorem Ipsum is simply dummy text.`,
     'likes': getRandomNumber(MAX_VALUE_FOR.LIKES),
-    'comments': getRandomArray(comments, MAX_VALUE_FOR.COMMENTS)
+    'comments': getRandomArray(comments, MAX_VALUE_FOR.COMMENTS),
+    'date': 1519136255107 // for tests
   };
-
-  return JSON.stringify(data);
 }
 
 module.exports = {
