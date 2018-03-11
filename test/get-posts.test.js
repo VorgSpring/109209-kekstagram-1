@@ -1,6 +1,7 @@
 const request = require(`supertest`);
 const assert = require(`assert`);
-const {ERRORS} = require(`../server/error/constants`);
+const {ERROR_MESSAGE} = require(`../server/posts/errors`);
+const {getValidationError, getNotFoundError} = require(`../server/error/index`);
 
 const {app} = require(`../server/index`);
 
@@ -40,19 +41,12 @@ describe(`#GET`, function () {
   });
 
   describe(`#bad request`, () => {
-    it(`should respond with 404 on bad request`, function () {
-      return request(app).get(`/api/pos`).set(`Accept`, `application/json`)
-          .expect(404)
-          .expect(`Content-Type`, /html/);
-    });
-
     it(`should respond with 404 on empty response`, function () {
       return request(app).get(`/api/posts/23`).set(`Accept`, `application/json`)
           .expect(404)
           .expect(`Content-Type`, /json/)
           .then((response) => {
-            const errorMessage = response.body.errorMessage;
-            assert(errorMessage, ERRORS.MESSAGE.NOT_FOUND);
+            assert.deepEqual(response.body, getNotFoundError(ERROR_MESSAGE.NOT_FOUND));
           });
     });
 
@@ -61,18 +55,25 @@ describe(`#GET`, function () {
           .expect(400)
           .expect(`Content-Type`, /json/)
           .then((response) => {
-            const errorMessage = response.body.errorMessage;
-            assert(errorMessage, ERRORS.MESSAGE.PARAMS);
+            assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.PARAM]));
           });
     });
 
-    it(`should respond with 400 on bad query parameters`, function () {
+    it(`should respond with 400 on bad skip query parameter`, function () {
       return request(app).get(`/api/posts/?skip=blah`).set(`Accept`, `application/json`)
           .expect(400)
           .expect(`Content-Type`, /json/)
           .then((response) => {
-            const errorMessage = response.body.errorMessage;
-            assert(errorMessage, ERRORS.MESSAGE.QUERY);
+            assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.QUERY.SKIP]));
+          });
+    });
+
+    it(`should respond with 400 on bad limit query parameter`, function () {
+      return request(app).get(`/api/posts/?limit=blah`).set(`Accept`, `application/json`)
+          .expect(400)
+          .expect(`Content-Type`, /json/)
+          .then((response) => {
+            assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.QUERY.LIMIT]));
           });
     });
   });
