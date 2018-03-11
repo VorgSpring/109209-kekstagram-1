@@ -70,51 +70,24 @@ const ERROR_MESSAGE = {
   },
 
   IMAGE: {
-    FORMAT: {
-      type: ERRORS.TYPE.VALIDATION,
-      field: ERRORS.FIELDS.IMAGE,
-      name: ERRORS.NAME.IMAGE,
-      error: ERRORS.MESSAGE.IMAGE
-    },
-
-    EMPTY: {
-      type: ERRORS.TYPE.VALIDATION,
-      field: ERRORS.FIELDS.IMAGE,
-      name: ERRORS.NAME.IMAGE,
-      error: ERRORS.MESSAGE.EMPTY
-    }
+    type: ERRORS.TYPE.VALIDATION,
+    field: ERRORS.FIELDS.IMAGE,
+    name: ERRORS.NAME.IMAGE,
+    error: ERRORS.MESSAGE.IMAGE
   },
 
   SCALE: {
-    FORMAT: {
-      type: ERRORS.TYPE.VALIDATION,
-      field: ERRORS.FIELDS.SCALE,
-      name: ERRORS.NAME.FIELD,
-      error: ERRORS.MESSAGE.SCALE
-    },
-
-    EMPTY: {
-      type: ERRORS.TYPE.VALIDATION,
-      field: ERRORS.FIELDS.SCALE,
-      name: ERRORS.NAME.FIELD,
-      error: ERRORS.MESSAGE.EMPTY
-    }
+    type: ERRORS.TYPE.VALIDATION,
+    field: ERRORS.FIELDS.SCALE,
+    name: ERRORS.NAME.FIELD,
+    error: ERRORS.MESSAGE.SCALE
   },
 
   EFFECT: {
-    FORMAT: {
-      type: ERRORS.TYPE.VALIDATION,
-      field: ERRORS.FIELDS.EFFECT,
-      name: ERRORS.NAME.FIELD,
-      error: ERRORS.MESSAGE.EFFECT
-    },
-
-    EMPTY: {
-      type: ERRORS.TYPE.VALIDATION,
-      field: ERRORS.FIELDS.EFFECT,
-      name: ERRORS.NAME.FIELD,
-      error: ERRORS.MESSAGE.EMPTY
-    }
+    type: ERRORS.TYPE.VALIDATION,
+    field: ERRORS.FIELDS.EFFECT,
+    name: ERRORS.NAME.FIELD,
+    error: ERRORS.MESSAGE.EFFECT
   },
 
   HASHTAGS: {
@@ -129,6 +102,29 @@ const ERROR_MESSAGE = {
     field: ERRORS.FIELDS.DESCRIPTION,
     name: ERRORS.NAME.FIELD,
     error: ERRORS.MESSAGE.DESCRIPTION
+  },
+
+  EMPTY: {
+    IMAGE: {
+      type: ERRORS.TYPE.VALIDATION,
+      field: ERRORS.FIELDS.IMAGE,
+      name: ERRORS.NAME.IMAGE,
+      error: ERRORS.MESSAGE.EMPTY
+    },
+
+    SCALE: {
+      type: ERRORS.TYPE.VALIDATION,
+      field: ERRORS.FIELDS.SCALE,
+      name: ERRORS.NAME.FIELD,
+      error: ERRORS.MESSAGE.EMPTY
+    },
+
+    EFFECT: {
+      type: ERRORS.TYPE.VALIDATION,
+      field: ERRORS.FIELDS.EFFECT,
+      name: ERRORS.NAME.FIELD,
+      error: ERRORS.MESSAGE.EMPTY
+    }
   }
 };
 

@@ -46,7 +46,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE.FORMAT]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE]));
               });
         });
 
@@ -60,7 +60,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE.EMPTY]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.IMAGE]));
               });
         });
       });
@@ -74,7 +74,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE.FORMAT]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE]));
               });
         });
 
@@ -86,7 +86,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE.EMPTY]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.IMAGE]));
               });
         });
       });
@@ -104,7 +104,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE.FORMAT]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE]));
               });
         });
 
@@ -118,7 +118,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE.EMPTY]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.SCALE]));
               });
         });
       });
@@ -132,7 +132,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE.FORMAT]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE]));
               });
         });
 
@@ -144,7 +144,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE.EMPTY]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.SCALE]));
               });
         });
       });
@@ -162,7 +162,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT.FORMAT]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT]));
               });
         });
 
@@ -176,7 +176,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT.EMPTY]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.EFFECT]));
               });
         });
       });
@@ -190,7 +190,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT.FORMAT]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT]));
               });
         });
 
@@ -202,7 +202,7 @@ describe(`#POST`, function () {
               .expect(400)
               .expect(`Content-Type`, /json/)
               .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT.EMPTY]));
+                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.EFFECT]));
               });
         });
       });

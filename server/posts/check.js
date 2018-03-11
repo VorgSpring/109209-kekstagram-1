@@ -18,55 +18,58 @@ const DESCRIPTION = {
   TYPE: `string`,
   MAX_VALUE: 140
 };
+const REQUIRED_FIELDS = [`image`, `scale`, `effect`];
 
-const checkImage = (image) => (
-  IMAGE_TYPES.indexOf(image.mimetype) !== -1
-);
+const check = {
+  image(image) {
+    return IMAGE_TYPES.indexOf(image.mimetype) !== -1;
+  },
 
-const checkEffect = (effect) => (
-  typeof effect === EFFECTS.TYPE
-    && EFFECTS.VALUES.indexOf(effect) !== -1
-);
+  effect(effect) {
+    return typeof effect === EFFECTS.TYPE
+      && EFFECTS.VALUES.indexOf(effect) !== -1;
+  },
 
-const checkScale = (scale) => (
-  checkNumber(scale)
-    && scale >= SCALE.MIN_VALUE
-      && scale <= SCALE.MAX_VALUE
-);
+  scale(scale) {
+    return checkNumber(scale)
+      && scale >= SCALE.MIN_VALUE
+        && scale <= SCALE.MAX_VALUE;
+  },
 
-const checkHashtags = (hashtags) => {
-  if (!Array.isArray(hashtags)
-    || hashtags.length >= HASHTAGS.MAX_ITEMS) {
-    return false;
-  }
+  hashtags(hashtags) {
+    if (!Array.isArray(hashtags)
+      || hashtags.length >= HASHTAGS.MAX_ITEMS) {
+      return false;
+    }
 
-  const isValid = true;
-  hashtags.forEach((hashtag, index) => {
-    if (hashtag.indexOf(`#`) === 0
-      && hashtag.indexOf(` `) === -1
-        && hashtag.length <= HASHTAGS.MAX_VALUE) {
+    const isValid = true;
+    hashtags.forEach((hashtag, index) => {
+      if (hashtag.indexOf(`#`) === 0
+        && hashtag.indexOf(` `) === -1
+          && hashtag.length <= HASHTAGS.MAX_VALUE) {
 
-      const hashtagsFiltered = hashtags.filter((item, i) => {
-        return i !== index && item === hashtag;
-      });
+        const hashtagsFiltered = hashtags.filter((item, i) => {
+          return i !== index && item === hashtag;
+        });
 
-      if (hashtagsFiltered.length !== 0) {
+        if (hashtagsFiltered.length !== 0) {
+          isValid = false;
+          return;
+        }
+      } else {
         isValid = false;
         return;
       }
-    } else {
-      isValid = false;
-      return;
-    }
-  });
+    });
 
-  return isValid;
+    return isValid;
+  },
+
+  description(description) {
+    return typeof description === DESCRIPTION.TYPE
+      && description.length <= DESCRIPTION.MAX_VALUE;
+  }
 };
-
-const checkDescription = (description) => (
-  typeof description === DESCRIPTION.TYPE
-    && description.length <= DESCRIPTION.MAX_VALUE
-);
 
 const checkGetRequest = (req) => {
   const {skip, limit} = req.query;
@@ -87,44 +90,24 @@ const checkGetRequest = (req) => {
 };
 
 const checkPostData = (data) => {
-  const {image, scale, effect, hashtags, description} = data;
   const errors = [];
+  const fields = Object.keys(data);
 
-  if (image) {
-    if (!checkImage(image)) {
-      errors.push(ERROR_MESSAGE.IMAGE.FORMAT);
+  REQUIRED_FIELDS.forEach((field) => {
+    if (fields.indexOf(field) === -1 || !data[field]) {
+      errors.push(ERROR_MESSAGE.EMPTY[field.toUpperCase()]);
     }
-  } else {
-    errors.push(ERROR_MESSAGE.IMAGE.EMPTY);
+  });
+
+  if (errors.length !== 0) {
+    return errors;
   }
 
-  if (effect) {
-    if (!checkEffect(effect)) {
-      errors.push(ERROR_MESSAGE.EFFECT.FORMAT);
+  fields.forEach((field) => {
+    if (check[field] && !check[field](data[field])) {
+      errors.push(ERROR_MESSAGE[field.toUpperCase()]);
     }
-  } else {
-    errors.push(ERROR_MESSAGE.EFFECT.EMPTY);
-  }
-
-  if (scale) {
-    if (!checkScale(scale)) {
-      errors.push(ERROR_MESSAGE.SCALE.FORMAT);
-    }
-  } else {
-    errors.push(ERROR_MESSAGE.SCALE.EMPTY);
-  }
-
-  if (hashtags) {
-    if (!checkHashtags(hashtags)) {
-      errors.push(ERROR_MESSAGE.HASHTAGS);
-    }
-  }
-
-  if (description) {
-    if (!checkDescription(description)) {
-      errors.push(ERROR_MESSAGE.DESCRIPTION);
-    }
-  }
+  });
 
   return errors;
 };
