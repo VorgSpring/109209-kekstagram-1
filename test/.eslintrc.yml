@@ -10,6 +10,6 @@ env:
   mocha: true
 
 rules:
-  max-nested-callbacks: [2, 5]
+  max-nested-callbacks: [2, 6]
 
 extends: 'htmlacademy/node'

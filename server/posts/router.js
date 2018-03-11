@@ -2,43 +2,14 @@ const {Router} = require(`express`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const {getData} = require(`../../data/get`);
-const {checkNumber} = require(`../../util/index`);
+const check = require(`./check`);
 const {notFoundError, validationError} = require(`../error/index`);
-const {ERRORS} = require(`../error/constants`);
-
-const ERROR_MESSAGE = {
-  QUERY: {
-    type: ERRORS.TYPE.BAD_REQUEST,
-    field: ERRORS.FIELDS.QUERY,
-    name: `request`,
-    error: ERRORS.MESSAGE.QUERY
-  },
-  PARAM: {
-    type: ERRORS.TYPE.BAD_REQUEST,
-    field: ERRORS.FIELDS.PARAMS,
-    name: `request`,
-    error: ERRORS.MESSAGE.PARAMS
-  },
-  NOT_FOUND: {
-    error: ERRORS.MESSAGE.NOT_FOUND
-  }
-};
+const {ERROR_MESSAGE} = require(`./errors`);
 
 const postsRouter = new Router();
 postsRouter.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
-
-const checkQueryParam = (skip, limit) => {
-  let isValid = true;
-  if (skip && !checkNumber(skip)) {
-    isValid = false;
-  }
-  if (limit && !checkNumber(limit)) {
-    isValid = false;
-  }
-  return isValid;
-};
 
 const getPosts = (skip = 0, limit = 50) => {
   const data = getData(limit);
@@ -46,11 +17,12 @@ const getPosts = (skip = 0, limit = 50) => {
 };
 
 postsRouter.get(``, (req, res) => {
-  const {skip, limit} = req.query;
-
-  if (!checkQueryParam(skip, limit)) {
-    return validationError(res, ERROR_MESSAGE.QUERY);
+  const errors = check.get(req);
+  if (errors.length !== 0) {
+    return validationError(res, errors);
   }
+
+  const {skip, limit} = req.query;
 
   const posts = getPosts(skip, limit);
   return res.send({
@@ -62,12 +34,12 @@ postsRouter.get(``, (req, res) => {
 });
 
 postsRouter.get(`/:date`, (req, res) => {
-  const date = parseInt(req.params.date, 10);
-
-  if (isNaN(date)) {
-    return validationError(res, ERROR_MESSAGE.PARAM);
+  const errors = check.get(req);
+  if (errors.length !== 0) {
+    return validationError(res, errors);
   }
 
+  const date = parseInt(req.params.date, 10);
   let posts = getPosts();
 
   posts = posts.filter((item)=> {
@@ -84,9 +56,18 @@ postsRouter.get(`/:date`, (req, res) => {
   });
 });
 
+postsRouter.post(``, upload.single(`image`), (req, res) => {
+  const data = req.body;
+  if (!data.image) {
+    data.image = req.file;
+  }
 
-postsRouter.post(``, upload.single(`url`), (req, res) => {
-  res.send(req.body);
+  const errors = check.post(data);
+  if (errors.length !== 0) {
+    return validationError(res, errors);
+  }
+
+  return res.send(data);
 });
 
 module.exports = {
