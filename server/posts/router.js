@@ -1,22 +1,26 @@
 const {Router} = require(`express`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
-const {getData} = require(`../../data/get`);
 const check = require(`./check`);
 const {notFoundError, validationError} = require(`../error/index`);
 const {ERROR_MESSAGE} = require(`./errors`);
+const {createStreamFromBuffer, async} = require(`../../util/index`);
 
 const postsRouter = new Router();
 postsRouter.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-const getPosts = (skip = 0, limit = 50) => {
-  const data = getData(limit);
-  return data.slice(skip, skip + limit);
+const getPosts = async (data, skip = 0, limit = 50) => {
+  return {
+    posts: data.slice(skip, skip + limit),
+    skip,
+    limit,
+    total: await data.length
+  };
 };
 
-postsRouter.get(``, (req, res) => {
+postsRouter.get(``, async(async (req, res) => {
   const errors = check.get(req);
   if (errors.length !== 0) {
     return validationError(res, errors);
@@ -24,42 +28,63 @@ postsRouter.get(``, (req, res) => {
 
   const {skip, limit} = req.query;
 
-  const posts = getPosts(skip, limit);
-  return res.send({
-    posts,
-    skip,
-    limit,
-    total: posts.length
-  });
-});
+  return res.send(
+      await getPosts(await postsRouter.postsStore.getAllPosts(), skip, limit)
+  );
+}));
 
-postsRouter.get(`/:date`, (req, res) => {
+postsRouter.get(`/:date`, async(async (req, res) => {
   const errors = check.get(req);
   if (errors.length !== 0) {
     return validationError(res, errors);
   }
 
   const date = parseInt(req.params.date, 10);
-  let posts = getPosts();
+  let post = await postsRouter.postsStore.getPost(date);
 
-  posts = posts.filter((item)=> {
-    return item.date === date;
-  });
-
-  if (posts.length === 0) {
+  if (!post) {
     return notFoundError(res, ERROR_MESSAGE.NOT_FOUND);
   }
 
-  return res.send({
-    posts,
-    total: posts.length
-  });
-});
+  return res.send({post});
+}));
 
-postsRouter.post(``, upload.single(`image`), (req, res) => {
+postsRouter.get(`/:date/image`, async(async (req, res) => {
+  const errors = check.get(req);
+  if (errors.length !== 0) {
+    return validationError(res, errors);
+  }
+
+  const date = parseInt(req.params.date, 10);
+  let post = await postsRouter.postsStore.getPost(date);
+
+  if (!post) {
+    return notFoundError(res, ERROR_MESSAGE.NOT_FOUND);
+  }
+
+  const image = post.image;
+
+  if (!image) {
+    return notFoundError(res, ERROR_MESSAGE.NOT_FOUND);
+  }
+
+  const {info, stream} = await postsRouter.imageStore.get(image.path);
+
+  if (!info) {
+    return notFoundError(res, ERROR_MESSAGE.NOT_FOUND);
+  }
+
+  res.set(`content-type`, image.mimetype);
+  res.set(`content-length`, info.length);
+  res.status(200);
+  return stream.pipe(res);
+}));
+
+postsRouter.post(``, upload.single(`image`), async(async (req, res) => {
   const data = req.body;
-  if (!data.image) {
-    data.image = req.file;
+  const image = req.file;
+  if (image) {
+    data.image = image;
   }
 
   const errors = check.post(data);
@@ -67,9 +92,23 @@ postsRouter.post(``, upload.single(`image`), (req, res) => {
     return validationError(res, errors);
   }
 
-  return res.send(data);
-});
+  data.date = Date.now().valueOf();
 
-module.exports = {
-  postsRouter
+  if (image) {
+    const imageInfo = {
+      path: `/api/posts/${data.date}/image`,
+      mimetype: image.mimetype
+    };
+    await postsRouter.imageStore.save(imageInfo.path, createStreamFromBuffer(image.buffer));
+    data.image = imageInfo;
+  }
+
+  await postsRouter.postsStore.save(data);
+  return res.send(data);
+}));
+
+module.exports = (postsStore, imageStore) => {
+  postsRouter.postsStore = postsStore;
+  postsRouter.imageStore = imageStore;
+  return postsRouter;
 };

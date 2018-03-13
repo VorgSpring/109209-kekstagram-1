@@ -1,8 +1,11 @@
 const request = require(`supertest`);
 const assert = require(`assert`);
-const {app} = require(`../server/index`);
 const {ERROR_MESSAGE} = require(`../server/posts/errors`);
 const {getValidationError} = require(`../server/error/index`);
+const mockPostsRouter = require(`./mock/router`);
+const app = require(`express`)();
+
+app.use(`/api/posts`, mockPostsRouter);
 
 describe(`#POST`, function () {
   describe(`#correct request`, () => {
