@@ -34,245 +34,83 @@ describe(`#POST`, function () {
   });
 
   describe(`#bad request`, () => {
-    describe(`#image`, () => {
-      describe(`#JSON`, () => {
-        it(`should respond with 400 on invalid image from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `text/html`},
-                'scale': 1,
-                'effect': `none`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE]));
-              });
-        });
-
-        it(`should respond with 400 on empty image from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': ``,
-                'scale': 1,
-                'effect': `none`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.IMAGE]));
-              });
-        });
+    describe(`#JSON`, () => {
+      it(`should respond with 400 on invalid from JSON`, () => {
+        return request(app).post(`/api/posts`)
+            .send({
+              'image': {mimetype: `text/html`},
+              'scale': `blah`,
+              'effect': `blah`,
+              'hashtags': `blah`,
+              'description': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet orci porttitor, pellentesque nisl vel, auctor mauris. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam amet.`
+            })
+            .expect(400)
+            .expect(`Content-Type`, /json/)
+            .then((response) => {
+              assert.deepEqual(response.body, getValidationError([
+                ERROR_MESSAGE.IMAGE,
+                ERROR_MESSAGE.SCALE,
+                ERROR_MESSAGE.EFFECT,
+                ERROR_MESSAGE.HASHTAGS,
+                ERROR_MESSAGE.DESCRIPTION
+              ]));
+            });
       });
 
-      describe(`#form data`, () => {
-        it(`should respond with 400 on invalid image from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/files/test.txt`)
-              .field(`scale`, `1`)
-              .field(`effect`, `none`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.IMAGE]));
-              });
-        });
-
-        it(`should respond with 400 on empty image from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, ``)
-              .field(`scale`, `1`)
-              .field(`effect`, `none`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.IMAGE]));
-              });
-        });
+      it(`should respond with 400 on empty from JSON`, () => {
+        return request(app).post(`/api/posts`)
+            .send({
+              'image': ``,
+              'scale': ``,
+              'effect': ``
+            })
+            .expect(400)
+            .expect(`Content-Type`, /json/)
+            .then((response) => {
+              assert.deepEqual(response.body, getValidationError([
+                ERROR_MESSAGE.EMPTY.IMAGE,
+                ERROR_MESSAGE.EMPTY.SCALE,
+                ERROR_MESSAGE.EMPTY.EFFECT
+              ]));
+            });
       });
     });
 
-    describe(`#scale`, () => {
-      describe(`#JSON`, () => {
-        it(`should respond with 400 on invalid field from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `image/jpeg`},
-                'scale': `blah`,
-                'effect': `none`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE]));
-              });
-        });
-
-        it(`should respond with 400 on empty field from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `image/jpeg`},
-                'scale': ``,
-                'effect': `none`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.SCALE]));
-              });
-        });
+    describe(`#form data`, () => {
+      it(`should respond with 400 on invalid from form data`, () => {
+        return request(app).post(`/api/posts`)
+            .attach(`image`, `test/files/test.txt`)
+            .field(`scale`, `blah`)
+            .field(`effect`, `blah`)
+            .field(`hashtags`, `blah`)
+            .field(`description`, `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet orci porttitor, pellentesque nisl vel, auctor mauris. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam amet.`)
+            .expect(400)
+            .expect(`Content-Type`, /json/)
+            .then((response) => {
+              assert.deepEqual(response.body, getValidationError([
+                ERROR_MESSAGE.SCALE,
+                ERROR_MESSAGE.EFFECT,
+                ERROR_MESSAGE.HASHTAGS,
+                ERROR_MESSAGE.DESCRIPTION,
+                ERROR_MESSAGE.IMAGE
+              ]));
+            });
       });
 
-      describe(`#form data`, () => {
-        it(`should respond with 400 on invalid field from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/image/test.jpg`)
-              .field(`scale`, `blah`)
-              .field(`effect`, `none`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.SCALE]));
-              });
-        });
-
-        it(`should respond with 400 on empty field from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/image/test.jpg`)
-              .field(`scale`, ``)
-              .field(`effect`, `none`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.SCALE]));
-              });
-        });
-      });
-    });
-
-    describe(`#effect`, () => {
-      describe(`#JSON`, () => {
-        it(`should respond with 400 on invalid field from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `image/jpeg`},
-                'scale': `1`,
-                'effect': `blah`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT]));
-              });
-        });
-
-        it(`should respond with 400 on empty field from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `image/jpeg`},
-                'scale': `1`,
-                'effect': ``
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.EFFECT]));
-              });
-        });
-      });
-
-      describe(`#form data`, () => {
-        it(`should respond with 400 on invalid field from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/image/test.jpg`)
-              .field(`scale`, `1`)
-              .field(`effect`, `blah`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EFFECT]));
-              });
-        });
-
-        it(`should respond with 400 on empty field from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/image/test.jpg`)
-              .field(`scale`, `1`)
-              .field(`effect`, ``)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.EMPTY.EFFECT]));
-              });
-        });
-      });
-    });
-
-    describe(`#hashtags`, () => {
-      describe(`#JSON`, () => {
-        it(`should respond with 400 on invalid field from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `image/jpeg`},
-                'scale': `1`,
-                'effect': `none`,
-                'hashtags': `blah`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.HASHTAGS]));
-              });
-        });
-      });
-
-      describe(`#form data`, () => {
-        it(`should respond with 400 on invalid field from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/image/test.jpg`)
-              .field(`scale`, `1`)
-              .field(`effect`, `none`)
-              .field(`hashtags`, `blah`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.HASHTAGS]));
-              });
-        });
-      });
-    });
-
-    describe(`#description`, () => {
-      describe(`#JSON`, () => {
-        it(`should respond with 400 on invalid field from JSON`, () => {
-          return request(app).post(`/api/posts`)
-              .send({
-                'image': {mimetype: `image/jpeg`},
-                'scale': `1`,
-                'effect': `none`,
-                'description': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet orci porttitor, pellentesque nisl vel, auctor mauris. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam amet.`
-              })
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.DESCRIPTION]));
-              });
-        });
-      });
-
-      describe(`#form data`, () => {
-        it(`should respond with 400 on invalid field from form data`, () => {
-          return request(app).post(`/api/posts`)
-              .attach(`image`, `test/image/test.jpg`)
-              .field(`scale`, `1`)
-              .field(`effect`, `none`)
-              .field(`description`, `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet orci porttitor, pellentesque nisl vel, auctor mauris. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam amet.`)
-              .expect(400)
-              .expect(`Content-Type`, /json/)
-              .then((response) => {
-                assert.deepEqual(response.body, getValidationError([ERROR_MESSAGE.DESCRIPTION]));
-              });
-        });
+      it(`should respond with 400 on empty from form data`, () => {
+        return request(app).post(`/api/posts`)
+            .attach(`image`, ``)
+            .field(`scale`, ``)
+            .field(`effect`, ``)
+            .expect(400)
+            .expect(`Content-Type`, /json/)
+            .then((response) => {
+              assert.deepEqual(response.body, getValidationError([
+                ERROR_MESSAGE.EMPTY.IMAGE,
+                ERROR_MESSAGE.EMPTY.SCALE,
+                ERROR_MESSAGE.EMPTY.EFFECT
+              ]));
+            });
       });
     });
   });
