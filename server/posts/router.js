@@ -5,6 +5,7 @@ const check = require(`./check`);
 const {notFoundError, validationError} = require(`../error/index`);
 const {ERROR_MESSAGE} = require(`./errors`);
 const {createStreamFromBuffer, async} = require(`../../util/index`);
+const {dataRenderer} = require(`../renderer/index`);
 const logger = require(`../../logger/index`);
 
 const postsRouter = new Router();
@@ -12,6 +13,10 @@ postsRouter.use(bodyParser.json());
 postsRouter.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);
   res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  next();
+});
+postsRouter.use((exception, req, res, next) => {
+  dataRenderer.renderException(req, res, exception);
   next();
 });
 
@@ -100,17 +105,17 @@ postsRouter.post(``, upload.single(`image`), async(async (req, res) => {
 
   data.date = Date.now().valueOf();
 
-  if (image) {
+  if (data.image) {
     const imageInfo = {
       path: `/api/posts/${data.date}/image`,
-      mimetype: image.mimetype
+      mimetype: data.image.mimetype
     };
-    await postsRouter.imageStore.save(imageInfo.path, createStreamFromBuffer(image.buffer));
-    data.image = imageInfo;
+    await postsRouter.imageStore.save(imageInfo.path, createStreamFromBuffer(data.image.buffer));
+    data.image = {...imageInfo};
   }
 
   await postsRouter.postsStore.save(data);
-  logger.info(data);
+  logger.info(JSON.stringify(data));
   return res.send(data);
 }));
 
