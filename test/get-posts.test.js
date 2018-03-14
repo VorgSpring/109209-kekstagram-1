@@ -2,8 +2,11 @@ const request = require(`supertest`);
 const assert = require(`assert`);
 const {ERROR_MESSAGE} = require(`../server/posts/errors`);
 const {getValidationError, getNotFoundError} = require(`../server/error/index`);
+const mockPostsRouter = require(`./mock/router`);
+const app = require(`express`)();
 
-const {app} = require(`../server/index`);
+app.use(`/api/posts`, mockPostsRouter);
+
 
 describe(`#GET`, function () {
   describe(`#correct request`, () => {
@@ -23,9 +26,7 @@ describe(`#GET`, function () {
           .expect(`Content-Type`, /json/)
           .then((response) => {
             const data = response.body;
-            data.posts.forEach((post) => {
-              assert(post.date, 1519136255107);
-            });
+            assert(data.post.date, 1519136255107);
           });
     });
 
