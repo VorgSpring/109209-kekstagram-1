@@ -1,4 +1,5 @@
 const db = require(`../../database/index`);
+const logger = require(`../../logger/index`);
 
 const NAME_COLLECTION = `posts`;
 const ERROR_FIND = `Failed to set up "${NAME_COLLECTION}"-collection`;
@@ -30,4 +31,4 @@ class PostsStore {
 
 }
 
-module.exports = new PostsStore(setupCollection().catch((e) => console.error(ERROR_FIND, e)));
+module.exports = new PostsStore(setupCollection().catch((e) => logger.error(ERROR_FIND, e)));
