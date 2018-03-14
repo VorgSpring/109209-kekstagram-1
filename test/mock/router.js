@@ -34,7 +34,7 @@ class MockPostsStore {
   }
 
   async getAllPosts() {
-    return new Cursor(posts).toArray();
+    return new Cursor(posts);
   }
 
   async save() {

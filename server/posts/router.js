@@ -11,12 +11,12 @@ postsRouter.use(bodyParser.json());
 
 const upload = multer({storage: multer.memoryStorage()});
 
-const getPosts = async (data, skip = 0, limit = 50) => {
+const getPosts = async (cursor, skip = 0, limit = 50) => {
   return {
-    posts: data.slice(skip, skip + limit),
+    posts: await (cursor.skip(skip).limit(limit).toArray()),
     skip,
     limit,
-    total: await data.length
+    total: await cursor.count()
   };
 };
 
